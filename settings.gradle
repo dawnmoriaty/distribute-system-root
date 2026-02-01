@@ -1,0 +1,6 @@
+rootProject.name = 'distributed-system-root'
+
+include 'common-lib'
+include 'server-node'
+include 'load-balancer'
+include 'javafx-client'

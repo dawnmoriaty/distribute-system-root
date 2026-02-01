@@ -1,0 +1,45 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':common-lib')
+
+    // HikariCP for connection pooling
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+
+    // MySQL connector
+    implementation 'mysql:mysql-connector-java:8.0.33'
+
+    // SLF4J for logging (required by HikariCP)
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+}
+
+application {
+    mainClass = 'org.example.WorkerServer'
+}
+
+// Task để chạy Worker Server 1 trên port 9001
+tasks.register('runWorker1', JavaExec) {
+    group = 'application'
+    description = 'Run Worker Server on port 9001'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.WorkerServer'
+    args = ['9001']
+}
+
+// Task để chạy Worker Server 2 trên port 9002
+tasks.register('runWorker2', JavaExec) {
+    group = 'application'
+    description = 'Run Worker Server on port 9002'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.WorkerServer'
+    args = ['9002']
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.example.WorkerServer'
+    }
+}

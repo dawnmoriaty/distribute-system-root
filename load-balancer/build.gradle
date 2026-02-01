@@ -1,0 +1,21 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':common-lib')
+
+    // SLF4J for logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+}
+
+application {
+    mainClass = 'org.example.LoadBalancer'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.example.LoadBalancer'
+    }
+}

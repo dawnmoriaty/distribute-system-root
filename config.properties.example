@@ -1,0 +1,26 @@
+# =====================================================
+# DISTRIBUTED SYSTEM CONFIGURATION
+# =====================================================
+# Copy this file to config.properties and modify values
+# OR set environment variables (takes priority)
+# =====================================================
+
+# ============== LOAD BALANCER ==============
+# IP của máy chạy Load Balancer
+LOAD_BALANCER_HOST=192.168.1.100
+LOAD_BALANCER_PORT=8080
+
+# ============== WORKER SERVERS ==============
+# IP của máy chạy Worker 1
+WORKER1_HOST=192.168.1.101
+WORKER1_PORT=9001
+
+# IP của máy chạy Worker 2
+WORKER2_HOST=192.168.1.102
+WORKER2_PORT=9002
+
+# ============== DATABASE ==============
+# MySQL connection (Worker servers sử dụng)
+DB_URL=jdbc:mysql://192.168.1.103:3306/distributed_db
+DB_USER=root
+DB_PASSWORD=yourpassword

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.ClientController"
+            prefWidth="800" prefHeight="600">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- Top: Title and Connection Info -->
+    <top>
+        <VBox spacing="10">
+            <Label text="Distributed System Client" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Separator/>
+        </VBox>
+    </top>
+
+    <!-- Center: Main Content -->
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+
+            <!-- Control Panel -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="fetchAllButton" text="Fetch All Users" prefWidth="120"/>
+                <Button fx:id="pingButton" text="Ping Server" prefWidth="100"/>
+                <Separator orientation="VERTICAL"/>
+                <Label text="Search:"/>
+                <TextField fx:id="searchField" promptText="Enter keyword..." prefWidth="150"/>
+                <Button fx:id="searchButton" text="Search"/>
+                <Separator orientation="VERTICAL"/>
+                <Label text="User ID:"/>
+                <TextField fx:id="userIdField" promptText="Enter ID..." prefWidth="80"/>
+                <Button fx:id="getUserButton" text="Get User"/>
+            </HBox>
+
+            <!-- Data Table -->
+            <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="usernameColumn" text="Username" prefWidth="150"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="fullNameColumn" text="Full Name" prefWidth="200"/>
+                </columns>
+                <placeholder>
+                    <Label text="No data loaded. Click 'Fetch All Users' to start."/>
+                </placeholder>
+            </TableView>
+        </VBox>
+    </center>
+
+    <!-- Bottom: Status Bar -->
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #f0f0f0; -fx-padding: 8;">
+            <ProgressIndicator fx:id="progressIndicator" prefWidth="20" prefHeight="20" visible="false"/>
+            <Label fx:id="statusLabel" text="Ready"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="workerLabel" text="Worker: -"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="responseTimeLabel" text="Time: -"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
