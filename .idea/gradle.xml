@@ -5,7 +5,8 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="C:/ProgramData/chocolatey/lib/gradle/tools/gradle-9.1.0" />
+        <option name="gradleHome" value="C:\ProgramData\chocolatey\lib\gradle\tools\gradle-9.1.0" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -18,6 +19,7 @@
       </GradleProjectSettings>
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/javafx-client" />
+        <option name="gradleHome" value="C:\ProgramData\chocolatey\lib\gradle\tools\gradle-9.1.0" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/javafx-client" />
