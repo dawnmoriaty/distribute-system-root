@@ -6,7 +6,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.ClientController"
-            prefWidth="800" prefHeight="600">
+            prefWidth="900" prefHeight="700">
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -27,10 +27,11 @@
                 <Insets top="10"/>
             </padding>
 
-            <!-- Control Panel -->
+            <!-- Control Panel Row 1: Fetch & Search -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button fx:id="fetchAllButton" text="Fetch All Users" prefWidth="120"/>
                 <Button fx:id="pingButton" text="Ping Server" prefWidth="100"/>
+                <Button fx:id="healthCheckButton" text="Health Check" prefWidth="100"/>
                 <Separator orientation="VERTICAL"/>
                 <Label text="Search:"/>
                 <TextField fx:id="searchField" promptText="Enter keyword..." prefWidth="150"/>
@@ -40,6 +41,37 @@
                 <TextField fx:id="userIdField" promptText="Enter ID..." prefWidth="80"/>
                 <Button fx:id="getUserButton" text="Get User"/>
             </HBox>
+
+            <!-- Control Panel Row 2: CRUD Operations -->
+            <TitledPane text="User Management (Create / Update / Delete)" expanded="true">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+
+                    <!-- Input Fields -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="ID:" prefWidth="80"/>
+                        <TextField fx:id="crudIdField" promptText="Auto (for create)" prefWidth="80"/>
+                        <Label text="Username:" prefWidth="80"/>
+                        <TextField fx:id="crudUsernameField" promptText="username" prefWidth="120"/>
+                        <Label text="Email:" prefWidth="50"/>
+                        <TextField fx:id="crudEmailField" promptText="email@example.com" prefWidth="180"/>
+                        <Label text="Full Name:" prefWidth="70"/>
+                        <TextField fx:id="crudFullNameField" promptText="Full Name" prefWidth="150"/>
+                    </HBox>
+
+                    <!-- Action Buttons -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button fx:id="createUserButton" text="➕ Create User" prefWidth="120" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                        <Button fx:id="updateUserButton" text="✏️ Update User" prefWidth="120" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                        <Button fx:id="deleteUserButton" text="🗑️ Delete User" prefWidth="120" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+                        <Separator orientation="VERTICAL"/>
+                        <Button fx:id="clearFormButton" text="Clear Form" prefWidth="100"/>
+                        <Button fx:id="loadSelectedButton" text="Load Selected" prefWidth="120"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
 
             <!-- Data Table -->
             <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
@@ -65,6 +97,8 @@
             <Label fx:id="workerLabel" text="Worker: -"/>
             <Separator orientation="VERTICAL"/>
             <Label fx:id="responseTimeLabel" text="Time: -"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="sslLabel" text="🔒 SSL: Enabled" style="-fx-text-fill: green;"/>
         </HBox>
     </bottom>
 

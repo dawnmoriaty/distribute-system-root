@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.common.SSLConfig;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Worker Server that processes client requests.
  * Can run multiple instances on different ports (e.g., 9001, 9002).
+ * Supports SSL/TLS encryption when enabled.
  */
 public class WorkerServer {
 
@@ -29,11 +32,13 @@ public class WorkerServer {
     }
 
     public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        // Use SSLConfig to create server socket (handles SSL/plain based on config)
+        try (ServerSocket serverSocket = SSLConfig.createServerSocket(port)) {
             System.out.println("========================================");
             System.out.println("  " + workerId + " started on port " + port);
             System.out.println("  Thread Pool Size: " + THREAD_POOL_SIZE);
             System.out.println("  Database: " + DatabaseConnection.getDatabaseInfo());
+            System.out.println("  " + SSLConfig.getSSLStatus());
             System.out.println("========================================");
 
             while (running) {

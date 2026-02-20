@@ -68,6 +68,12 @@ public class ClientHandler implements Runnable {
                 case Commands.CREATE_USER:
                     return createUser(data);
 
+                case Commands.UPDATE_USER:
+                    return updateUser(data);
+
+                case Commands.DELETE_USER:
+                    return deleteUser(data);
+
                 case Commands.SEARCH_USERS:
                     return searchUsers(data);
 
@@ -79,6 +85,9 @@ public class ClientHandler implements Runnable {
 
                 case Commands.HEALTH_CHECK:
                     return healthCheck();
+
+                case Commands.GET_STATS:
+                    return getStats();
 
                 default:
                     return ResponsePayload.error("Unknown command: " + command);
@@ -239,6 +248,91 @@ public class ClientHandler implements Runnable {
             }
         } catch (SQLException e) {
             return ResponsePayload.error("Health check failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates an existing user.
+     * Expected data format: JSON with id, username, email, fullName
+     */
+    private ResponsePayload updateUser(String jsonData) {
+        try {
+            UserDTO user = PacketUtils.getObjectMapper().readValue(jsonData, UserDTO.class);
+
+            if (user.getId() == null) {
+                return ResponsePayload.error("User ID is required for update");
+            }
+
+            try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
+                String query = "UPDATE users SET username = ?, email = ?, full_name = ? WHERE id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setString(1, user.getUsername());
+                    stmt.setString(2, user.getEmail());
+                    stmt.setString(3, user.getFullName());
+                    stmt.setLong(4, user.getId());
+
+                    int rows = stmt.executeUpdate();
+                    if (rows > 0) {
+                        return ResponsePayload.success(null, "User updated successfully");
+                    } else {
+                        return ResponsePayload.notFound("User not found with ID: " + user.getId());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return ResponsePayload.error("Error updating user: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes a user by ID.
+     * Expected data: user ID as string
+     */
+    private ResponsePayload deleteUser(String idStr) {
+        try {
+            long userId = Long.parseLong(idStr);
+
+            try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
+                String query = "DELETE FROM users WHERE id = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setLong(1, userId);
+
+                    int rows = stmt.executeUpdate();
+                    if (rows > 0) {
+                        return ResponsePayload.success(null, "User deleted successfully");
+                    } else {
+                        return ResponsePayload.notFound("User not found with ID: " + idStr);
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            return ResponsePayload.error("Invalid user ID format: " + idStr);
+        } catch (SQLException e) {
+            return ResponsePayload.error("Database error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Returns server statistics.
+     */
+    private ResponsePayload getStats() {
+        try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
+            String query = "SELECT COUNT(*) as total FROM users";
+            try (PreparedStatement stmt = conn.prepareStatement(query);
+                 ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    long totalUsers = rs.getLong("total");
+                    String stats = String.format(
+                        "{\"workerId\":\"%s\",\"totalUsers\":%d,\"timestamp\":%d}",
+                        workerId, totalUsers, System.currentTimeMillis()
+                    );
+                    return ResponsePayload.success(stats, "Stats retrieved");
+                }
+            }
+            return ResponsePayload.error("Could not retrieve stats");
+        } catch (SQLException e) {
+            return ResponsePayload.error("Database error: " + e.getMessage());
         }
     }
 }

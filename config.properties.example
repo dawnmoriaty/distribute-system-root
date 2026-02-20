@@ -1,26 +1,49 @@
-# =====================================================
-# DISTRIBUTED SYSTEM CONFIGURATION
-# =====================================================
-# Copy this file to config.properties and modify values
-# OR set environment variables (takes priority)
-# =====================================================
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║              DISTRIBUTED SYSTEM CONFIGURATION                            ║
+# ╠══════════════════════════════════════════════════════════════════════════╣
+# ║  1. Copy file này thành config.properties                                ║
+# ║  2. Sửa IP theo mạng thực tế của nhóm bạn                               ║
+# ║  3. Copy file config.properties giống nhau lên TẤT CẢ 4 máy            ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
 
-# ============== LOAD BALANCER ==============
-# IP của máy chạy Load Balancer
+# ============== PHÂN BỔ MÁY ==============
+# Máy 1 (192.168.1.10)   : Client (Thành viên 1)
+# Máy 2 (192.168.1.100)  : Load Balancer (Thành viên 2)
+# Máy 3 (192.168.1.101)  : Worker Server 1 (Thành viên 3)
+# Máy 4 (192.168.1.102)  : Worker Server 2 + MySQL (Thành viên 4)
+
+# ============== LOAD BALANCER (Máy 2) ==============
 LOAD_BALANCER_HOST=192.168.1.100
 LOAD_BALANCER_PORT=8080
 
 # ============== WORKER SERVERS ==============
-# IP của máy chạy Worker 1
+# Worker 1 (Máy 3)
 WORKER1_HOST=192.168.1.101
 WORKER1_PORT=9001
 
-# IP của máy chạy Worker 2
+# Worker 2 (Máy 4) - cùng máy với Database
 WORKER2_HOST=192.168.1.102
 WORKER2_PORT=9002
 
-# ============== DATABASE ==============
-# MySQL connection (Worker servers sử dụng)
-DB_URL=jdbc:mysql://192.168.1.103:3306/distributed_db
+# ============== DATABASE (Máy 4) ==============
+# MySQL chạy trên cùng máy với Worker 2
+DB_URL=jdbc:mysql://192.168.1.102:3306/distributed_db
 DB_USER=root
-DB_PASSWORD=yourpassword
+DB_PASSWORD=password
+
+# ============== SSL/TLS (Optional) ==============
+# Bật/tắt SSL encryption (true/false)
+SSL_ENABLED=false
+
+# Đường dẫn đến keystore file (chứa certificate)
+SSL_KEYSTORE_PATH=keystore.jks
+
+# Password của keystore
+SSL_KEYSTORE_PASSWORD=changeit
+
+# Password của private key trong keystore
+SSL_KEY_PASSWORD=changeit
+
+# ============== TẠO SSL CERTIFICATE ==============
+# Chạy lệnh sau để tạo self-signed certificate:
+# keytool -genkeypair -alias distributed-system -keyalg RSA -keysize 2048 -validity 365 -keystore keystore.jks -storepass changeit -keypass changeit

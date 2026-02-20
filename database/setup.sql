@@ -5,6 +5,14 @@
 -- Use the database (already created by Docker)
 USE distributed_db;
 
+-- ============================================
+-- QUAN TRỌNG: Cấp quyền truy cập từ xa
+-- Cho phép các máy khác trong mạng LAN kết nối
+-- ============================================
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

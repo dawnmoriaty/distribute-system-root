@@ -31,14 +31,29 @@ public class ClientController {
     @FXML private TextField searchField;
     @FXML private TextField userIdField;
 
+    // CRUD fields
+    @FXML private TextField crudIdField;
+    @FXML private TextField crudUsernameField;
+    @FXML private TextField crudEmailField;
+    @FXML private TextField crudFullNameField;
+
     @FXML private Button fetchAllButton;
     @FXML private Button searchButton;
     @FXML private Button getUserButton;
     @FXML private Button pingButton;
+    @FXML private Button healthCheckButton;
+
+    // CRUD buttons
+    @FXML private Button createUserButton;
+    @FXML private Button updateUserButton;
+    @FXML private Button deleteUserButton;
+    @FXML private Button clearFormButton;
+    @FXML private Button loadSelectedButton;
 
     @FXML private Label statusLabel;
     @FXML private Label workerLabel;
     @FXML private Label responseTimeLabel;
+    @FXML private Label sslLabel;
     @FXML private ProgressIndicator progressIndicator;
 
     private final ObservableList<UserDTO> userData = FXCollections.observableArrayList();
@@ -57,6 +72,44 @@ public class ClientController {
         searchButton.setOnAction(e -> searchUsers());
         getUserButton.setOnAction(e -> getUserById());
         pingButton.setOnAction(e -> pingServer());
+
+        // Health check button
+        if (healthCheckButton != null) {
+            healthCheckButton.setOnAction(e -> healthCheck());
+        }
+
+        // CRUD button handlers
+        if (createUserButton != null) {
+            createUserButton.setOnAction(e -> createUser());
+        }
+        if (updateUserButton != null) {
+            updateUserButton.setOnAction(e -> updateUser());
+        }
+        if (deleteUserButton != null) {
+            deleteUserButton.setOnAction(e -> deleteUser());
+        }
+        if (clearFormButton != null) {
+            clearFormButton.setOnAction(e -> clearForm());
+        }
+        if (loadSelectedButton != null) {
+            loadSelectedButton.setOnAction(e -> loadSelectedUser());
+        }
+
+        // Table selection listener
+        userTable.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    loadUserToForm(newSelection);
+                }
+            }
+        );
+
+        // Update SSL status
+        if (sslLabel != null) {
+            boolean sslEnabled = socketClient.isSSLEnabled();
+            sslLabel.setText(sslEnabled ? "🔒 SSL: Enabled" : "🔓 SSL: Disabled");
+            sslLabel.setStyle(sslEnabled ? "-fx-text-fill: green;" : "-fx-text-fill: orange;");
+        }
 
         // Initial status
         updateStatus("Ready. Connected to: " + socketClient.getConnectionInfo());
@@ -101,6 +154,164 @@ public class ClientController {
     }
 
     /**
+     * Creates a new user.
+     */
+    private void createUser() {
+        if (!validateCrudFields(false)) {
+            return;
+        }
+
+        try {
+            UserDTO user = new UserDTO();
+            user.setUsername(crudUsernameField.getText().trim());
+            user.setEmail(crudEmailField.getText().trim());
+            user.setFullName(crudFullNameField.getText().trim());
+
+            String json = PacketUtils.getObjectMapper().writeValueAsString(user);
+            executeAsyncWithCallback(Commands.CREATE_USER, json, "Creating user...", () -> {
+                clearForm();
+                fetchAllUsers(); // Refresh list
+            });
+        } catch (Exception e) {
+            showAlert("Error creating user: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates an existing user.
+     */
+    private void updateUser() {
+        if (!validateCrudFields(true)) {
+            return;
+        }
+
+        try {
+            UserDTO user = new UserDTO();
+            user.setId(Long.parseLong(crudIdField.getText().trim()));
+            user.setUsername(crudUsernameField.getText().trim());
+            user.setEmail(crudEmailField.getText().trim());
+            user.setFullName(crudFullNameField.getText().trim());
+
+            String json = PacketUtils.getObjectMapper().writeValueAsString(user);
+            executeAsyncWithCallback(Commands.UPDATE_USER, json, "Updating user...", () -> {
+                fetchAllUsers(); // Refresh list
+            });
+        } catch (Exception e) {
+            showAlert("Error updating user: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes a user by ID.
+     */
+    private void deleteUser() {
+        String idText = crudIdField.getText();
+        if (idText == null || idText.trim().isEmpty()) {
+            showAlert("Please enter or select a user ID to delete");
+            return;
+        }
+
+        // Confirmation dialog
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete User?");
+        confirm.setContentText("Are you sure you want to delete user with ID: " + idText + "?");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                executeAsyncWithCallback(Commands.DELETE_USER, idText.trim(), "Deleting user...", () -> {
+                    clearForm();
+                    fetchAllUsers(); // Refresh list
+                });
+            }
+        });
+    }
+
+    /**
+     * Clears the CRUD form fields.
+     */
+    private void clearForm() {
+        Platform.runLater(() -> {
+            if (crudIdField != null) crudIdField.clear();
+            if (crudUsernameField != null) crudUsernameField.clear();
+            if (crudEmailField != null) crudEmailField.clear();
+            if (crudFullNameField != null) crudFullNameField.clear();
+        });
+    }
+
+    /**
+     * Loads the selected user from table to form.
+     */
+    private void loadSelectedUser() {
+        UserDTO selected = userTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert("Please select a user from the table");
+            return;
+        }
+        loadUserToForm(selected);
+    }
+
+    /**
+     * Loads a user DTO to the form fields.
+     */
+    private void loadUserToForm(UserDTO user) {
+        Platform.runLater(() -> {
+            if (crudIdField != null && user.getId() != null) {
+                crudIdField.setText(String.valueOf(user.getId()));
+            }
+            if (crudUsernameField != null) {
+                crudUsernameField.setText(user.getUsername() != null ? user.getUsername() : "");
+            }
+            if (crudEmailField != null) {
+                crudEmailField.setText(user.getEmail() != null ? user.getEmail() : "");
+            }
+            if (crudFullNameField != null) {
+                crudFullNameField.setText(user.getFullName() != null ? user.getFullName() : "");
+            }
+        });
+    }
+
+    /**
+     * Validates CRUD form fields.
+     */
+    private boolean validateCrudFields(boolean requireId) {
+        if (requireId) {
+            String idText = crudIdField != null ? crudIdField.getText() : null;
+            if (idText == null || idText.trim().isEmpty()) {
+                showAlert("User ID is required for update");
+                return false;
+            }
+            try {
+                Long.parseLong(idText.trim());
+            } catch (NumberFormatException e) {
+                showAlert("Invalid User ID format");
+                return false;
+            }
+        }
+
+        String username = crudUsernameField != null ? crudUsernameField.getText() : null;
+        if (username == null || username.trim().isEmpty()) {
+            showAlert("Username is required");
+            return false;
+        }
+
+        String email = crudEmailField != null ? crudEmailField.getText() : null;
+        if (email == null || email.trim().isEmpty()) {
+            showAlert("Email is required");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Performs health check on the server.
+     */
+    private void healthCheck() {
+        executeAsync(Commands.HEALTH_CHECK, null, "Checking health...");
+    }
+
+    /**
      * Pings the server to check connectivity.
      */
     private void pingServer() {
@@ -129,12 +340,23 @@ public class ClientController {
      * Executes an async request to the server.
      */
     private void executeAsync(String command, String data, String loadingMessage) {
+        executeAsyncWithCallback(command, data, loadingMessage, null);
+    }
+
+    /**
+     * Executes an async request with a callback on success.
+     */
+    private void executeAsyncWithCallback(String command, String data, String loadingMessage, Runnable onSuccess) {
         Task<ResponsePayload> task = createRequestTask(command, data);
 
         task.setOnSucceeded(e -> {
             ResponsePayload response = task.getValue();
             handleResponse(response);
             hideProgress();
+
+            if (response.isSuccess() && onSuccess != null) {
+                Platform.runLater(onSuccess);
+            }
         });
 
         task.setOnFailed(e -> {
