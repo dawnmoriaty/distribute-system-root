@@ -8,6 +8,6 @@ module org.example.common {
     // Export all packages
     exports org.example.common;
 
-    // Open for reflection (Jackson, JavaFX)
-    opens org.example.common to com.fasterxml.jackson.databind, javafx.fxml;
+    // Open for reflection (Jackson)
+    opens org.example.common to com.fasterxml.jackson.databind;
 }
