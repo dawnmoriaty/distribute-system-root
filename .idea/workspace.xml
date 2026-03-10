@@ -5,24 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc35a0fc-6a52-45de-b67f-0479fec6f72b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/ConnectionAccessManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/PendingConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminLauncher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminLauncher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/Commands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.properties.example" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/load-balancer/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/load-balancer/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/LoadBalancer.java" beforeDir="false" afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/LoadBalancer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server-node/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server-node/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server-node/src/main/java/org/example/WorkerServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/WorkerServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,7 +238,7 @@
       <workItem from="1772696201120" duration="450000" />
       <workItem from="1772696664041" duration="5544000" />
       <workItem from="1773023995569" duration="50000" />
-      <workItem from="1773153770351" duration="5893000" />
+      <workItem from="1773153770351" duration="7126000" />
     </task>
     <servers />
   </component>
