@@ -23,7 +23,8 @@ dependencies {
 }
 
 application {
-    mainClass = 'org.example.WorkerServer'
+    // Default: chạy Server VỚI Admin Dashboard UI
+    mainClass = 'org.example.admin.ServerAdminLauncher'
 }
 
 // Task để chạy Worker Server 1 trên port 9001 (console only, no UI)
