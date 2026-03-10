@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.common.ConnectionAccessManager;
 import org.example.common.NetworkConfig;
 import org.example.common.SSLConfig;
 
@@ -42,7 +43,36 @@ public class LoadBalancer {
     private final AtomicInteger activeConnections = new AtomicInteger(0);
     private final ExecutorService threadPool;
     private final ScheduledExecutorService healthCheckScheduler;
+    private final ConnectionAccessManager accessManager = ConnectionAccessManager.getInstance();
     private volatile boolean running = true;
+
+    public ConnectionAccessManager getAccessManager() {
+        return accessManager;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public List<String> getWorkerNodes() {
+        return workerNodes;
+    }
+
+    public Map<String, Boolean> getWorkerHealth() {
+        return workerHealth;
+    }
+
+    public int getActiveConnectionCount() {
+        return activeConnections.get();
+    }
+
+    public int getTotalConnectionCount() {
+        return totalConnections.get();
+    }
 
     public LoadBalancer() {
         this.port = NetworkConfig.getLoadBalancerPort();
@@ -69,14 +99,30 @@ public class LoadBalancer {
             while (running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
+
+                    // ===== Dynamic TCP Access Control =====
+                    if (!accessManager.evaluateConnection(clientSocket)) {
+                        System.out.println("[LB] Connection REFUSED from "
+                                + clientSocket.getRemoteSocketAddress());
+                        closeSocket(clientSocket);
+                        continue;
+                    }
+
                     int connNum = totalConnections.incrementAndGet();
                     activeConnections.incrementAndGet();
 
                     System.out.println("[LB] Connection #" + connNum +
-                            " from " + clientSocket.getRemoteSocketAddress() +
+                            " ACCEPTED from " + clientSocket.getRemoteSocketAddress() +
                             " | Active: " + activeConnections.get());
 
-                    threadPool.submit(() -> handleClient(clientSocket, connNum));
+                    final Socket finalClientSocket = clientSocket;
+                    threadPool.submit(() -> {
+                        try {
+                            handleClient(finalClientSocket, connNum);
+                        } finally {
+                            accessManager.untrackConnection(finalClientSocket);
+                        }
+                    });
                 } catch (IOException e) {
                     if (running) {
                         System.err.println("[LB] Accept error: " + e.getMessage());
@@ -103,9 +149,9 @@ public class LoadBalancer {
 
                 if (healthy != wasHealthy) {
                     if (healthy) {
-                        System.out.println("[LB] ✅ Worker " + worker + " is now HEALTHY");
+                        System.out.println("[LB]  Worker " + worker + " is now HEALTHY");
                     } else {
-                        System.out.println("[LB] ❌ Worker " + worker + " is now UNHEALTHY");
+                        System.out.println("[LB]  Worker " + worker + " is now UNHEALTHY");
                     }
                 }
             }
@@ -172,6 +218,7 @@ public class LoadBalancer {
         System.out.println("║  Thread Pool: " + THREAD_POOL_SIZE + "                         ║");
         System.out.println("║  Health Check: Every " + HEALTH_CHECK_INTERVAL_SECONDS + "s               ║");
         System.out.printf("║  %-40s║%n", SSLConfig.getSSLStatus());
+        System.out.printf("║  Access Control: %-23s║%n", accessManager.getApprovalMode());
         System.out.println("╠══════════════════════════════════════════╣");
         System.out.println("║  Worker Nodes:                           ║");
         for (String node : workerNodes) {

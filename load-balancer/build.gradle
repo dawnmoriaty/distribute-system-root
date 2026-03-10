@@ -1,5 +1,11 @@
 plugins {
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+javafx {
+    version = '21'
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 dependencies {
@@ -12,6 +18,14 @@ dependencies {
 
 application {
     mainClass = 'org.example.LoadBalancer'
+}
+
+// Task to run Load Balancer WITH Admin Dashboard UI
+tasks.register('runAdmin', JavaExec) {
+    group = 'application'
+    description = 'Run Load Balancer WITH Admin Dashboard'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.admin.LBAdminLauncher'
 }
 
 jar {

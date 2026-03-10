@@ -1,5 +1,11 @@
 plugins {
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+javafx {
+    version = '21'
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
 dependencies {
@@ -20,7 +26,7 @@ application {
     mainClass = 'org.example.WorkerServer'
 }
 
-// Task để chạy Worker Server 1 trên port 9001
+// Task để chạy Worker Server 1 trên port 9001 (console only, no UI)
 tasks.register('runWorker1', JavaExec) {
     group = 'application'
     description = 'Run Worker Server on port 9001'
@@ -29,12 +35,30 @@ tasks.register('runWorker1', JavaExec) {
     args = ['9001']
 }
 
-// Task để chạy Worker Server 2 trên port 9002
+// Task để chạy Worker Server 2 trên port 9002 (console only, no UI)
 tasks.register('runWorker2', JavaExec) {
     group = 'application'
     description = 'Run Worker Server on port 9002'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'org.example.WorkerServer'
+    args = ['9002']
+}
+
+// Task để chạy Worker Server 1 VỚI Admin Dashboard UI
+tasks.register('runAdmin1', JavaExec) {
+    group = 'application'
+    description = 'Run Worker Server on port 9001 WITH Admin Dashboard'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.admin.ServerAdminLauncher'
+    args = ['9001']
+}
+
+// Task để chạy Worker Server 2 VỚI Admin Dashboard UI
+tasks.register('runAdmin2', JavaExec) {
+    group = 'application'
+    description = 'Run Worker Server on port 9002 WITH Admin Dashboard'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.admin.ServerAdminLauncher'
     args = ['9002']
 }
 

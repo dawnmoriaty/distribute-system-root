@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fc35a0fc-6a52-45de-b67f-0479fec6f72b" name="Changes" comment="" />
+    <list default="true" id="fc35a0fc-6a52-45de-b67f-0479fec6f72b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/ConnectionAccessManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/PendingConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/admin/LBAdminLauncher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/admin/ServerAdminLauncher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/common-lib/src/main/java/org/example/common/Commands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.properties.example" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/load-balancer/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/load-balancer/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/LoadBalancer.java" beforeDir="false" afterPath="$PROJECT_DIR$/load-balancer/src/main/java/org/example/LoadBalancer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-node/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server-node/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-node/src/main/java/org/example/WorkerServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/server-node/src/main/java/org/example/WorkerServer.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +33,13 @@
     <persistenceIdMap>
       <entry key="_D:/lmt/distributed-system-root" value="38mzCnPH4HbUtIoBF793Bdp8haI" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="chat-panel" value="Claude Opus 4.6" />
+      <entry key="agent-panel" value="Claude Opus 4.6" />
+    </selectedModels>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -83,6 +109,11 @@
   "keyToString": {
     "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
     "Gradle.Upgrade Gradle wrapper.executor": "Run",
+    "Gradle.distributed-system-root [:javafx-client:org.example.ClientApplication.main()].executor": "Run",
+    "Gradle.distributed-system-root [:load-balancer:org.example.LoadBalancer.main()].executor": "Run",
+    "Gradle.distributed-system-root [:server-node:org.example.WorkerServer.main()].executor": "Run",
+    "Gradle.distributed-system-root [:server-node:org.example.admin.ServerAdminApplication.main()].executor": "Run",
+    "Gradle.distributed-system-root [:server-node:org.example.admin.ServerAdminLauncher.main()].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -100,37 +131,98 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "onboarding.tips.debug.path": "D:/lmt/distributed-system-root/src/main/java/org/example/Main.java",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "settings.editor.selected.configurable": "preferences.JavaFX",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.ServerAdminLauncher">
+    <configuration name="ClientApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.ClientApplication" />
+      <module name="distributed-system-root.javafx-client.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LoadBalancer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.LoadBalancer" />
+      <module name="distributed-system-root.load-balancer.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerAdminApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.admin.ServerAdminApplication" />
+      <module name="distributed-system-root.server-node.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.admin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerAdminLauncher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.admin.ServerAdminLauncher" />
+      <module name="distributed-system-root.server-node.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.admin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WorkerServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.WorkerServer" />
+      <module name="distributed-system-root.server-node.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="sourceFilePath" value="docker-compose.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Application.ServerAdminLauncher" />
+        <item itemvalue="Application.ServerAdminApplication" />
+        <item itemvalue="Application.ClientApplication" />
+        <item itemvalue="Application.WorkerServer" />
+        <item itemvalue="Application.LoadBalancer" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
       </set>
     </attachedChunks>
   </component>
@@ -154,11 +246,44 @@
       <workItem from="1771611390641" duration="289000" />
       <workItem from="1771611701549" duration="337000" />
       <workItem from="1771612063665" duration="67000" />
+      <workItem from="1771697914621" duration="309000" />
+      <workItem from="1771767510928" duration="756000" />
+      <workItem from="1772032204190" duration="229000" />
+      <workItem from="1772180818934" duration="188000" />
+      <workItem from="1772695107911" duration="134000" />
+      <workItem from="1772695252739" duration="860000" />
+      <workItem from="1772696201120" duration="450000" />
+      <workItem from="1772696664041" duration="5544000" />
+      <workItem from="1773023995569" duration="50000" />
+      <workItem from="1773153770351" duration="5893000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -170,6 +295,10 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

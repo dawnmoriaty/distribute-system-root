@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.common.ConnectionAccessManager;
 import org.example.common.SSLConfig;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Worker Server that processes client requests.
  * Can run multiple instances on different ports (e.g., 9001, 9002).
  * Supports SSL/TLS encryption when enabled.
+ * Supports dynamic TCP connection access control (approve/reject).
  */
 public class WorkerServer {
 
@@ -23,12 +25,29 @@ public class WorkerServer {
     private final String workerId;
     private final ExecutorService threadPool;
     private final AtomicInteger connectionCount = new AtomicInteger(0);
+    private final ConnectionAccessManager accessManager = ConnectionAccessManager.getInstance();
     private volatile boolean running = true;
 
     public WorkerServer(int port) {
         this.port = port;
         this.workerId = "Worker-" + port;
         this.threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getWorkerId() {
+        return workerId;
+    }
+
+    public ConnectionAccessManager getAccessManager() {
+        return accessManager;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public void start() {
@@ -39,16 +58,35 @@ public class WorkerServer {
             System.out.println("  Thread Pool Size: " + THREAD_POOL_SIZE);
             System.out.println("  Database: " + DatabaseConnection.getDatabaseInfo());
             System.out.println("  " + SSLConfig.getSSLStatus());
+            System.out.println("  Access Control Mode: " + accessManager.getApprovalMode());
             System.out.println("========================================");
 
             while (running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
+
+                    // ===== Dynamic TCP Access Control =====
+                    // Check ACL rules (blacklist/whitelist) or wait for manual admin approval.
+                    // This is the TCP-level "right to refuse" — not hard-coded!
+                    if (!accessManager.evaluateConnection(clientSocket)) {
+                        System.out.println("[" + workerId + "] Connection REFUSED from "
+                                + clientSocket.getRemoteSocketAddress());
+                        try { clientSocket.close(); } catch (IOException ignored) {}
+                        continue;
+                    }
+
                     int connNum = connectionCount.incrementAndGet();
                     System.out.println("[" + workerId + "] Connection #" + connNum +
-                            " from " + clientSocket.getRemoteSocketAddress());
+                            " ACCEPTED from " + clientSocket.getRemoteSocketAddress());
 
-                    threadPool.submit(new ClientHandler(clientSocket, workerId));
+                    // Wrap client handler to untrack connection on close
+                    threadPool.submit(() -> {
+                        try {
+                            new ClientHandler(clientSocket, workerId).run();
+                        } finally {
+                            accessManager.untrackConnection(clientSocket);
+                        }
+                    });
                 } catch (IOException e) {
                     if (running) {
                         System.err.println("[" + workerId + "] Accept error: " + e.getMessage());

@@ -9,22 +9,34 @@ distributed-system-root/
 ├── build.gradle              # Root build file
 ├── settings.gradle           # Module configuration
 ├── config.properties.example # Template cấu hình mạng
+├── acl.properties            # Auto-generated: Whitelist/Blacklist rules (dynamic)
 ├── common-lib/               # Shared DTOs, utilities
 │   └── src/main/java/org/example/common/
-│       ├── PacketUtils.java      # Length-Prefix Framing
-│       ├── RequestPayload.java   # Request DTO
-│       ├── ResponsePayload.java  # Response DTO
-│       ├── UserDTO.java          # User entity DTO
-│       ├── Commands.java         # Command constants
-│       └── NetworkConfig.java    # Network configuration loader
+│       ├── PacketUtils.java          # Length-Prefix Framing
+│       ├── RequestPayload.java       # Request DTO
+│       ├── ResponsePayload.java      # Response DTO
+│       ├── UserDTO.java              # User entity DTO
+│       ├── Commands.java             # Command constants
+│       ├── NetworkConfig.java        # Network configuration loader
+│       ├── SSLConfig.java            # SSL/TLS configuration
+│       ├── ConnectionAccessManager.java  # 🛡️ Dynamic TCP ACL engine
+│       └── PendingConnection.java    # 🛡️ Pending connection model
 ├── server-node/              # Worker Server
 │   └── src/main/java/org/example/
-│       ├── WorkerServer.java     # Main server
-│       ├── ClientHandler.java    # Request handler
-│       └── DatabaseConnection.java # HikariCP pool
+│       ├── WorkerServer.java         # Main server (with ACL integration)
+│       ├── ClientHandler.java        # Request handler
+│       ├── DatabaseConnection.java   # HikariCP pool
+│       └── admin/                    # 🖥️ Server Admin Dashboard
+│           ├── ServerAdminLauncher.java
+│           ├── ServerAdminApplication.java
+│           └── ServerAdminController.java
 ├── load-balancer/            # Load Balancer (Round Robin)
 │   └── src/main/java/org/example/
-│       └── LoadBalancer.java     # Main LB
+│       ├── LoadBalancer.java         # Main LB (with ACL integration)
+│       └── admin/                    # 🖥️ LB Admin Dashboard
+│           ├── LBAdminLauncher.java
+│           ├── LBAdminApplication.java
+│           └── LBAdminController.java
 ├── javafx-client/            # Desktop Client
 │   └── src/main/java/org/example/
 │       ├── ClientApplication.java
@@ -140,6 +152,95 @@ mysql -u root -p < database/setup.sql
 
 # Linux/Mac
 ./gradlew :javafx-client:run
+```
+
+## 🛡️ Admin Dashboard — Dynamic TCP Access Control
+
+### Bản chất TCP: Quyền từ chối kết nối
+
+TCP cho phép server **accept hoặc refuse** bất kỳ kết nối nào. Hệ thống này hiện thực hóa quyền đó thông qua **Admin Dashboard UI** — không phải cấu hình cứng trong code!
+
+### Cách chạy Server VỚI Admin Dashboard
+
+Thay vì chạy `runWorker1`/`runWorker2` (console only), chạy `runAdmin1`/`runAdmin2`:
+
+```bash
+# Worker Server 1 + Admin Dashboard
+.\gradlew.bat :server-node:runAdmin1
+
+# Worker Server 2 + Admin Dashboard
+.\gradlew.bat :server-node:runAdmin2
+
+# Load Balancer + Admin Dashboard
+.\gradlew.bat :load-balancer:runAdmin
+```
+
+### Dashboard có 4 tab chính:
+
+#### 🔌 Tab 1: Active Connections
+- Xem tất cả kết nối TCP đang hoạt động (IP, port, thời gian)
+- **Kick**: Ngắt kết nối bất kỳ client nào
+- **Block IP & Kick**: Thêm IP vào blacklist + ngắt ngay
+
+#### ⏳ Tab 2: Pending Approvals (MANUAL mode)
+- Khi chế độ MANUAL bật, mỗi kết nối TCP mới sẽ **chờ admin duyệt**
+- **✅ Approve**: Cho phép kết nối
+- **❌ Reject**: Từ chối kết nối
+- **✅ Approve & Whitelist**: Cho phép + thêm IP vào whitelist luôn
+- Nếu không duyệt trong timeout (mặc định 30s) → tự động reject
+
+#### 🛡️ Tab 3: Access Control
+- **AUTO mode**: Dùng whitelist/blacklist tự động
+  - Whitelist trống = cho phép tất cả
+  - Whitelist có IP = chỉ cho phép IP đó
+  - Blacklist = luôn chặn
+- **MANUAL mode**: Admin duyệt từng kết nối qua Tab 2
+- Thêm/xóa IP whitelist/blacklist từ UI
+- Cấu hình timeout cho manual approval
+- Tất cả thay đổi được **lưu tự động** vào `acl.properties`
+
+#### 📋 Tab 4: Logs
+- Log realtime tất cả events: accept, reject, kick, thay đổi ACL
+
+### Luồng hoạt động TCP Access Control
+
+```
+Client gửi kết nối TCP
+         │
+         ▼
+   serverSocket.accept()
+         │
+         ▼
+┌─────────────────────────┐
+│ ConnectionAccessManager │
+│   evaluateConnection()  │
+└────────┬────────────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+ Blacklist? ──YES──► REJECT (close socket)
+    │NO
+    ▼
+ Mode = AUTO?
+    │YES              │NO (MANUAL)
+    ▼                 ▼
+ Whitelist empty?   Đưa vào PendingQueue
+    │YES → ALLOW     Hiển thị trên UI
+    │NO              Admin Approve/Reject
+    ▼                 │
+ IP in whitelist?    Timeout → Auto Reject
+    │YES → ALLOW
+    │NO → REJECT
+```
+
+### File `acl.properties` (auto-generated)
+
+```properties
+# Connection Access Control List — Auto-generated, editable from Admin UI
+whitelist=192.168.1.10,192.168.1.20
+blacklist=10.0.0.5
+approval_mode=AUTO
+manual_timeout_ms=30000
 ```
 
 ## 📊 Luồng hoạt động
@@ -310,6 +411,9 @@ Hệ thống đọc config theo thứ tự ưu tiên:
 | `DB_URL` | jdbc:mysql://localhost:3306/distributed_db | JDBC URL |
 | `DB_USER` | root | Database username |
 | `DB_PASSWORD` | password | Database password |
+| `SSL_ENABLED` | false | Enable SSL/TLS encryption |
+| `ACL_APPROVAL_MODE` | AUTO | TCP approval mode (AUTO/MANUAL) |
+| `ACL_MANUAL_TIMEOUT_MS` | 30000 | Manual approval timeout (ms) |
 
 ## 📝 Available Commands
 

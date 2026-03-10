@@ -47,3 +47,20 @@ SSL_KEY_PASSWORD=changeit
 # ============== TẠO SSL CERTIFICATE ==============
 # Chạy lệnh sau để tạo self-signed certificate:
 # keytool -genkeypair -alias distributed-system -keyalg RSA -keysize 2048 -validity 365 -keystore keystore.jks -storepass changeit -keypass changeit
+
+# ============== ACCESS CONTROL (TCP Connection ACL) ==============
+# Approval mode: AUTO (use whitelist/blacklist) or MANUAL (admin approves each connection)
+# ACL_APPROVAL_MODE=AUTO
+
+# Timeout for manual approval in milliseconds (default: 30000 = 30 seconds)
+# ACL_MANUAL_TIMEOUT_MS=30000
+
+# Whitelist/Blacklist managed dynamically via Admin Dashboard UI
+# and auto-persisted to acl.properties file
+
+# ============== CÁCH CHẠY VỚI ADMIN DASHBOARD ==============
+# Thay vì runWorker1/runWorker2, chạy runAdmin1/runAdmin2 để có UI quản trị:
+#   .\gradlew.bat :server-node:runAdmin1    (Worker 1 + Admin UI)
+#   .\gradlew.bat :server-node:runAdmin2    (Worker 2 + Admin UI)
+#   .\gradlew.bat :load-balancer:runAdmin   (Load Balancer + Admin UI)
+
