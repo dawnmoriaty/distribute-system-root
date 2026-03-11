@@ -1,22 +1,12 @@
 @echo off
 echo ============================================
-echo   DISTRIBUTED SYSTEM - SERVER (Worker %1)
-echo   Nhanh: main
+echo   DISTRIBUTED SYSTEM - BRANCH: client-1
+echo   VAI TRO: JavaFX Client 1
 echo ============================================
 echo.
-
-if "%1"=="" (
-    echo Usage: RUN.bat [port]
-    echo   RUN.bat 9001    - Chay Worker Server 1 voi Admin Dashboard
-    echo   RUN.bat 9002    - Chay Worker Server 2 voi Admin Dashboard
-    echo.
-    echo Dang chay Worker Server 1 (port 9001) mac dinh...
-    set PORT=9001
-) else (
-    set PORT=%1
-)
-
-echo Dang khoi dong Server tren port %PORT% voi Admin Dashboard...
+echo [client-1] Khoi dong JavaFX Client 1...
+echo [client-1] Client se ket noi den Load Balancer de gui request.
+echo [client-1] Dam bao Load Balancer (nhanh load-balancer) da chay truoc.
 echo.
-call gradlew.bat :server-node:run --args="%PORT%"
+call gradlew.bat :javafx-client:run
 
