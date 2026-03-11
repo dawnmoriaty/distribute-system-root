@@ -1,6 +1,19 @@
 rootProject.name = 'distributed-system-root'
 
-include 'common-lib'
-include 'server-node'
-include 'load-balancer'
-include 'javafx-client'
+// ====================================================================
+// NHANH: client-2 -- VAI TRO: JavaFX Client 2
+// ====================================================================
+// Chi build module javafx-client + common-lib (shared).
+// Source code server-node, load-balancer van giu nguyen trong repo,
+// nhung KHONG build o nhanh nay.
+//   - Nhanh 'main'          : Worker Server + Admin Dashboard + Database
+//   - Nhanh 'load-balancer' : Load Balancer + LB Admin UI
+//   - Nhanh 'client-1'      : JavaFX Client 1
+// ====================================================================
+
+include 'common-lib'       // Shared DTOs, protocol, utilities (core cho moi nhanh)
+include 'javafx-client'    // JavaFX Client UI
+
+// === CAC MODULE DUOI DAY KHONG BUILD O NHANH CLIENT-2 ===
+// include 'server-node'   // -> Chay o nhanh 'main'
+// include 'load-balancer'  // -> Chay o nhanh 'load-balancer'

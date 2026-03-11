@@ -1,90 +1,95 @@
-# 🖥️ Distributed System — Nhánh `main` (Server Worker)
+# Distributed System -- Nhanh `client-2`
 
-## 📋 Vai trò: Worker Server + Admin Dashboard
+## Vai tro: JavaFX Client 2
 
-Nhánh này chạy **Worker Server** — xử lý request từ client, kết nối database, và cung cấp **Admin Dashboard UI** để quản lý kết nối TCP.
+Nhanh nay chay **JavaFX Client** -- giao dien desktop de tuong tac voi he thong phan tan.
+Client gui request TCP den Load Balancer, LB route den Worker Server xu ly.
 
-## 🚀 CÁCH CHẠY (1 lệnh duy nhất)
+### Nhanh nay chay:
+- JavaFX Client UI -- giao dien CRUD users, ping, health check
+- SocketClient -- ket noi TCP den Load Balancer (Length-Prefix Framing)
+- common-lib -- shared DTOs, protocol, utilities
 
-### Bước 1: Setup Database (lần đầu)
+### Nhanh nay KHONG build:
+- `server-node/` -- chay o nhanh `main`
+- `load-balancer/` -- chay o nhanh `load-balancer`
+
+---
+
+## CACH CHAY
+
+### Dieu kien tien quyet:
+1. Worker Server da chay (nhanh `main`): `RUN.bat 9001`
+2. Load Balancer da chay (nhanh `load-balancer`): `RUN.bat`
+
+### Chay Client 2:
+
+**Cach 1 -- RUN.bat (khuyen nghi):**
 ```bash
-docker-compose up -d
+RUN.bat
 ```
 
-### Bước 2: Chạy Server
-
-**Cách 1 — Dùng RUN.bat:**
+**Cach 2 -- Gradle truc tiep:**
 ```bash
-# Worker Server 1 (port 9001) + Admin Dashboard UI
-RUN.bat 9001
-
-# Worker Server 2 (port 9002) + Admin Dashboard UI
-RUN.bat 9002
+.\gradlew.bat :javafx-client:run
 ```
 
-**Cách 2 — Dùng Gradle trực tiếp:**
-```bash
-# Worker 1 + Admin Dashboard
-.\gradlew.bat :server-node:run --args="9001"
+---
 
-# Worker 2 + Admin Dashboard
-.\gradlew.bat :server-node:run --args="9002"
+## Giao dien Client UI
+
+### Chuc nang:
+| Thanh phan | Chuc nang |
+|------------|-----------|
+| Fetch All Users | Lay danh sach tat ca users tu database |
+| Search | Tim kiem user theo keyword (username, email, full name) |
+| Get User | Lay user theo ID cu the |
+| Ping Server | Kiem tra ket noi TCP den server |
+| Health Check | Kiem tra trang thai server |
+| Create User | Tao user moi (username, email, full name) |
+| Update User | Cap nhat user (chon tu bang hoac nhap ID) |
+| Delete User | Xoa user theo ID |
+
+### Status Bar:
+- Trang thai ket noi hien tai
+- Worker Server nao da xu ly request (round robin)
+- Thoi gian xu ly (ms)
+- Trang thai SSL
+
+---
+
+## Luong ket noi
+
+```
+  +-------------+     +------------------+     +-------------------+
+  |  CLIENT 2   |---->|  LOAD BALANCER   |---->|  Worker Server 1  |
+  |  (NHANH NAY)|     |  Port: 8080      |     |  Port: 9001       |
+  |  JavaFX UI  |     |  Round Robin     |     +-------------------+
+  +-------------+     |                  |     +-------------------+
+                      |                  |---->|  Worker Server 2  |
+                      +------------------+     |  Port: 9002       |
+                                               +-------------------+
 ```
 
-## 🛡️ Admin Dashboard UI
+---
 
-Khi chạy, giao diện Admin Dashboard sẽ mở ra với 4 tabs:
+## Tat ca cac nhanh
 
-| Tab | Chức năng |
-|-----|-----------|
-| 🔌 Active Connections | Xem + Kick kết nối TCP đang hoạt động |
-| ⏳ Pending Approvals | Duyệt/từ chối kết nối (MANUAL mode) |
-| 🛡️ Access Control | Quản lý Whitelist/Blacklist IP, chuyển AUTO/MANUAL |
-| 📋 Logs | Log realtime tất cả events |
+| Nhanh | Vai tro | Module build | Lenh chay |
+|-------|---------|-------------|------------|
+| `main` | Worker Server + Core | common-lib, server-node | `RUN.bat 9001` |
+| `load-balancer` | Load Balancer + Admin UI | common-lib, load-balancer | `RUN.bat` |
+| `client-1` | JavaFX Client 1 | common-lib, javafx-client | `RUN.bat` |
+| `client-2` | **JavaFX Client 2** <-- BAN O DAY | common-lib, javafx-client | `RUN.bat` |
 
-### 2 chế độ hoạt động:
-- **AUTO**: Tự động cho phép/chặn dựa trên whitelist/blacklist
-- **MANUAL**: Admin duyệt từng kết nối TCP qua UI
+---
 
-## 🌐 Khi chạy trên máy khác (Multi-machine)
+## Chay tren nhieu may (Multi-machine)
 
-Sửa file `config.properties`:
+Sua `config.properties`:
 ```properties
-LOAD_BALANCER_HOST=<IP máy Load Balancer>
+# Chi can doi IP cua Load Balancer
+LOAD_BALANCER_HOST=<IP may Load Balancer>
 LOAD_BALANCER_PORT=8080
-WORKER1_HOST=<IP máy này>
-WORKER1_PORT=9001
-WORKER2_HOST=<IP máy Worker 2>
-WORKER2_PORT=9002
-DB_URL=jdbc:mysql://<IP máy DB>:3306/distributed_db
-DB_USER=root
-DB_PASSWORD=password
 ```
-
-## 📊 Sơ đồ hệ thống
-
-```
-                    ┌─────────────────────────────┐
-                    │     NHÁNH NÀY (main)        │
-                    │  Worker Server + Admin UI    │
-                    │  Port: 9001 hoặc 9002       │
-                    └──────────┬──────────────────┘
-                               │
-  Client 1 ──► Load Balancer ──┤
-  Client 2 ──► (nhánh lb)   ──┤──► MySQL Database
-                               │
-                    ┌──────────┴──────────────────┐
-                    │     Worker Server khác       │
-                    │  (máy khác, cùng nhánh main) │
-                    └─────────────────────────────┘
-```
-
-## 📂 Các nhánh trong hệ thống
-
-| Nhánh | Vai trò | Lệnh chạy |
-|-------|---------|------------|
-| `main` | **Worker Server** + Admin Dashboard ⬅️ BẠN Ở ĐÂY | `RUN.bat 9001` |
-| `load-balancer` | Load Balancer + Monitor UI | `RUN.bat` |
-| `client-1` | Client 1 | `RUN.bat` |
-| `client-2` | Client 2 | `RUN.bat` |
 
