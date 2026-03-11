@@ -1,7 +1,7 @@
 @echo off
 echo ============================================
-echo   DISTRIBUTED SYSTEM - SERVER (Worker %1)
-echo   Nhanh: main
+echo   DISTRIBUTED SYSTEM - BRANCH: main
+echo   VAI TRO: Worker Server + Admin Dashboard
 echo ============================================
 echo.
 
@@ -16,7 +16,9 @@ if "%1"=="" (
     set PORT=%1
 )
 
-echo Dang khoi dong Server tren port %PORT% voi Admin Dashboard...
+echo [main] Khoi dong Worker Server tren port %PORT% voi Admin Dashboard...
+echo [main] Server se lang nghe ket noi TCP tu Load Balancer hoac Client truc tiep.
+echo [main] Admin Dashboard UI cho phep quan ly ket noi TCP (ACL, Whitelist, Blacklist).
 echo.
 call gradlew.bat :server-node:run --args="%PORT%"
 

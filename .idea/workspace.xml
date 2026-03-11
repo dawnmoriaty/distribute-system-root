@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="fc35a0fc-6a52-45de-b67f-0479fec6f72b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server-node/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server-node/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BRANCH-README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BRANCH-README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RUN.bat" beforeDir="false" afterPath="$PROJECT_DIR$/RUN.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +18,7 @@
   </component>
   <component name="CopilotPersistence">
     <persistenceIdMap>
+      <entry key="_D:/laptrinhmang/distribute-system-root" value="3AmX5Bezvf5fSnWfxoID8Rk4euL" />
       <entry key="_D:/lmt/distributed-system-root" value="38mzCnPH4HbUtIoBF793Bdp8haI" />
     </persistenceIdMap>
   </component>
@@ -64,8 +68,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/dawnmoriaty/distribute-system-root.git&quot;,
-    &quot;accountId&quot;: &quot;a90e267a-b3c0-4462-8f06-dca4041ebbda&quot;
+    &quot;url&quot;: &quot;https://github.com/dawnmoriaty/distribute-system-root&quot;,
+    &quot;accountId&quot;: &quot;3fada37e-0e54-43bd-a96a-d34c8d97725c&quot;
   }
 }</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\My PC\.gradle\wrapper\dists\gradle-8.3-all\6en3ugtfdg5xnpx44z4qbwgas\gradle-8.3" javaHome="C:\Program Files\Amazon Corretto\jdk21.0.9_10" gradleVersion="8.3" />
@@ -93,6 +97,8 @@
   "keyToString": {
     "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
     "Gradle.Upgrade Gradle wrapper.executor": "Run",
+    "Gradle.distribute-system-root:server-node [:server-node:org.example.WorkerServer.main()].executor": "Run",
+    "Gradle.distribute-system-root:server-node [:server-node:org.example.admin.ServerAdminApplication.main()].executor": "Run",
     "Gradle.distributed-system-root [:javafx-client:org.example.ClientApplication.main()].executor": "Run",
     "Gradle.distributed-system-root [:load-balancer:org.example.LoadBalancer.main()].executor": "Run",
     "Gradle.distributed-system-root [:server-node:org.example.WorkerServer.main()].executor": "Run",
@@ -101,6 +107,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
@@ -120,23 +127,10 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.ServerAdminLauncher">
+  <component name="RunManager" selected="Application.WorkerServer">
     <configuration name="ClientApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.ClientApplication" />
       <module name="distributed-system-root.javafx-client.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="LoadBalancer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.LoadBalancer" />
-      <module name="distributed-system-root.load-balancer.main" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="org.example.*" />
@@ -192,21 +186,29 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
         <item itemvalue="Application.ServerAdminLauncher" />
         <item itemvalue="Application.ServerAdminApplication" />
         <item itemvalue="Application.ClientApplication" />
         <item itemvalue="Application.WorkerServer" />
-        <item itemvalue="Application.LoadBalancer" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.29188.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.29188.11" />
       </set>
     </attachedChunks>
   </component>
@@ -240,6 +242,8 @@
       <workItem from="1772696664041" duration="5544000" />
       <workItem from="1773023995569" duration="50000" />
       <workItem from="1773153770351" duration="7528000" />
+      <workItem from="1773198528444" duration="8000" />
+      <workItem from="1773246759599" duration="2067000" />
     </task>
     <servers />
   </component>
