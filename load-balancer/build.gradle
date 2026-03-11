@@ -17,19 +17,20 @@ dependencies {
 }
 
 application {
-    mainClass = 'org.example.LoadBalancer'
+    // Default: chạy Load Balancer VỚI Admin Dashboard UI
+    mainClass = 'org.example.admin.LBAdminLauncher'
 }
 
-// Task to run Load Balancer WITH Admin Dashboard UI
-tasks.register('runAdmin', JavaExec) {
+// Task để chạy Load Balancer chỉ console (không UI)
+tasks.register('runConsole', JavaExec) {
     group = 'application'
-    description = 'Run Load Balancer WITH Admin Dashboard'
+    description = 'Run Load Balancer console only (no Admin Dashboard UI)'
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'org.example.admin.LBAdminLauncher'
+    mainClass = 'org.example.LoadBalancer'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.example.LoadBalancer'
+        attributes 'Main-Class': 'org.example.admin.LBAdminLauncher'
     }
 }

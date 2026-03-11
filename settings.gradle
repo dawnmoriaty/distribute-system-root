@@ -1,6 +1,19 @@
 rootProject.name = 'distributed-system-root'
 
-include 'common-lib'
-include 'server-node'
-include 'load-balancer'
-include 'javafx-client'
+// ====================================================================
+// NHÁNH: load-balancer — VAI TRÒ: Load Balancer + Admin Dashboard UI
+// ====================================================================
+// Chỉ build module Load Balancer + common-lib (shared).
+// Source code server-node, javafx-client vẫn giữ nguyên trong repo,
+// nhưng KHÔNG build ở nhánh này.
+//   - Nhánh 'main'     : Worker Server + Admin Dashboard + Database
+//   - Nhánh 'client-1' : JavaFX Client 1
+//   - Nhánh 'client-2' : JavaFX Client 2
+// ====================================================================
+
+include 'common-lib'       // Shared DTOs, protocol, utilities (core cho mọi nhánh)
+include 'load-balancer'    // Load Balancer + Admin Dashboard UI
+
+// === CÁC MODULE DƯỚI ĐÂY KHÔNG BUILD Ở NHÁNH LOAD-BALANCER ===
+// include 'server-node'   // → Chạy ở nhánh 'main'
+// include 'javafx-client'  // → Chạy ở nhánh 'client-1' hoặc 'client-2'

@@ -1,22 +1,12 @@
 @echo off
 echo ============================================
-echo   DISTRIBUTED SYSTEM - SERVER (Worker %1)
-echo   Nhanh: main
+echo   DISTRIBUTED SYSTEM - BRANCH: load-balancer
+echo   VAI TRO: Load Balancer + Admin Dashboard
 echo ============================================
 echo.
-
-if "%1"=="" (
-    echo Usage: RUN.bat [port]
-    echo   RUN.bat 9001    - Chay Worker Server 1 voi Admin Dashboard
-    echo   RUN.bat 9002    - Chay Worker Server 2 voi Admin Dashboard
-    echo.
-    echo Dang chay Worker Server 1 (port 9001) mac dinh...
-    set PORT=9001
-) else (
-    set PORT=%1
-)
-
-echo Dang khoi dong Server tren port %PORT% voi Admin Dashboard...
+echo [load-balancer] Khoi dong Load Balancer + Admin Dashboard UI...
+echo [load-balancer] LB se lang nghe ket noi TCP tu Client, route den Worker Servers.
+echo [load-balancer] Admin Dashboard UI: quan ly ket noi TCP, Worker Health, ACL.
 echo.
-call gradlew.bat :server-node:run --args="%PORT%"
+call gradlew.bat :load-balancer:run
 
