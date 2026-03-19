@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="fc35a0fc-6a52-45de-b67f-0479fec6f72b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BRANCH-README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BRANCH-README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RUN.bat" beforeDir="false" afterPath="$PROJECT_DIR$/RUN.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javafx-client/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/javafx-client/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javafx-client/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/javafx-client/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +26,8 @@
   <component name="CopilotUserSelectedModel">
     <selectedModels>
       <entry key="edit-panel" value="GPT-5 mini" />
-      <entry key="chat-panel" value="Claude Opus 4.6" />
-      <entry key="agent-panel" value="Claude Opus 4.6" />
+      <entry key="chat-panel" value="GPT-5.2-Codex" />
+      <entry key="agent-panel" value="GPT-5.2-Codex" />
     </selectedModels>
   </component>
   <component name="ExternalProjectsData">
@@ -43,12 +44,20 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/server-node">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="distributed-system-root" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="distributed-system-root" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -81,6 +90,9 @@
     <commands />
     <urls />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
@@ -97,8 +109,10 @@
   "keyToString": {
     "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
     "Gradle.Upgrade Gradle wrapper.executor": "Run",
+    "Gradle.distribute-system-root [build].executor": "Run",
     "Gradle.distribute-system-root:server-node [:server-node:org.example.WorkerServer.main()].executor": "Run",
     "Gradle.distribute-system-root:server-node [:server-node:org.example.admin.ServerAdminApplication.main()].executor": "Run",
+    "Gradle.distribute-system-root:server-node [:server-node:org.example.admin.ServerAdminLauncher.main()].executor": "Run",
     "Gradle.distributed-system-root [:javafx-client:org.example.ClientApplication.main()].executor": "Run",
     "Gradle.distributed-system-root [:load-balancer:org.example.LoadBalancer.main()].executor": "Run",
     "Gradle.distributed-system-root [:server-node:org.example.WorkerServer.main()].executor": "Run",
@@ -127,7 +141,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.WorkerServer">
+  <component name="RunManager" selected="Application.ServerAdminLauncher">
     <configuration name="ClientApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.ClientApplication" />
       <module name="distributed-system-root.javafx-client.main" />
@@ -167,18 +181,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WorkerServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.example.WorkerServer" />
-      <module name="distributed-system-root.server-node.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.example.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="distribute-system-root [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
@@ -196,11 +219,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.distribute-system-root [build]" />
         <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
         <item itemvalue="Application.ServerAdminLauncher" />
         <item itemvalue="Application.ServerAdminApplication" />
         <item itemvalue="Application.ClientApplication" />
-        <item itemvalue="Application.WorkerServer" />
       </list>
     </recent_temporary>
   </component>
@@ -244,6 +267,8 @@
       <workItem from="1773153770351" duration="7528000" />
       <workItem from="1773198528444" duration="8000" />
       <workItem from="1773246759599" duration="2067000" />
+      <workItem from="1773887389067" duration="8000" />
+      <workItem from="1773899681563" duration="2686000" />
     </task>
     <servers />
   </component>

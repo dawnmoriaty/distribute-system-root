@@ -1,7 +1,6 @@
 module org.example.javafxclient {
     requires javafx.controls;
     requires javafx.fxml;
-    requires org.controlsfx.controls;
 
     // Common lib (automatic module)
     requires org.example.common;

@@ -15,5 +15,5 @@ include 'common-lib'       // Shared DTOs, protocol, utilities (core cho mọi n
 include 'server-node'      // Worker Server + Admin Dashboard UI
 
 // === CÁC MODULE DƯỚI ĐÂY KHÔNG BUILD Ở NHÁNH MAIN ===
-// include 'load-balancer'  // → Chạy ở nhánh 'load-balancer'
-// include 'javafx-client'  // → Chạy ở nhánh 'client-1' hoặc 'client-2'
+include 'load-balancer'    // → Chạy ở nhánh 'load-balancer'
+include 'javafx-client'    // → Chạy ở nhánh 'client-1' hoặc 'client-2'
