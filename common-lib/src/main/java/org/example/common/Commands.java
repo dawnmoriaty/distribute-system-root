@@ -5,11 +5,13 @@ package org.example.common;
  */
 public final class Commands {
 
-    private Commands() {} // Prevent instantiation
+    private Commands() {
+    } // Prevent instantiation
 
     // User commands
     public static final String GET_USER = "GET_USER";
     public static final String GET_ALL_USERS = "GET_ALL_USERS";
+    public static final String GET_ALL_USERS_PAGINATED = "GET_ALL_USERS_PAGINATED";
     public static final String CREATE_USER = "CREATE_USER";
     public static final String UPDATE_USER = "UPDATE_USER";
     public static final String DELETE_USER = "DELETE_USER";

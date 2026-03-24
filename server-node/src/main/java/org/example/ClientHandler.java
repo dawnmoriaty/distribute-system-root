@@ -65,6 +65,9 @@ public class ClientHandler implements Runnable {
                 case Commands.GET_ALL_USERS:
                     return getAllUsers();
 
+                case Commands.GET_ALL_USERS_PAGINATED:
+                    return getAllUsersPaginated(data);
+
                 case Commands.CREATE_USER:
                     return createUser(data);
 
@@ -141,7 +144,7 @@ public class ClientHandler implements Runnable {
         try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
             String query = "SELECT id, username, email, full_name, created_at FROM users LIMIT 100";
             try (PreparedStatement stmt = conn.prepareStatement(query);
-                 ResultSet rs = stmt.executeQuery()) {
+                    ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
                     UserDTO user = new UserDTO();
@@ -156,6 +159,87 @@ public class ClientHandler implements Runnable {
 
             ResponsePayload response = ResponsePayload.success(null, "Found " + users.size() + " users");
             response.setUsers(users);
+            return response;
+
+        } catch (SQLException e) {
+            System.err.println("[" + workerId + "] DB Error: " + e.getMessage());
+            return ResponsePayload.error("Database error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieves paginated users from database.
+     * Expected data format: "page:size" (e.g., "1:20" for page 1 with 20 items per
+     * page)
+     */
+    private ResponsePayload getAllUsersPaginated(String data) {
+        List<UserDTO> users = new ArrayList<>();
+        long pageNum = 1;
+        long pageSize = 20;
+
+        // Parse page and size from data
+        if (data != null && !data.isEmpty()) {
+            try {
+                String[] parts = data.split(":");
+                if (parts.length >= 1) {
+                    pageNum = Long.parseLong(parts[0]);
+                }
+                if (parts.length >= 2) {
+                    pageSize = Long.parseLong(parts[1]);
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("[" + workerId + "] Invalid pagination format: " + data);
+            }
+        }
+
+        // Validate input
+        if (pageNum < 1)
+            pageNum = 1;
+        if (pageSize < 1 || pageSize > 1000)
+            pageSize = 20;
+
+        long offset = (pageNum - 1) * pageSize;
+
+        try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
+            // Get total count
+            long totalCount = 0;
+            String countQuery = "SELECT COUNT(*) as total FROM users";
+            try (PreparedStatement countStmt = conn.prepareStatement(countQuery);
+                    ResultSet rs = countStmt.executeQuery()) {
+                if (rs.next()) {
+                    totalCount = rs.getLong("total");
+                }
+            }
+
+            long totalPages = (totalCount + pageSize - 1) / pageSize; // Ceiling division
+
+            // Get paginated data
+            String query = "SELECT id, username, email, full_name, created_at FROM users ORDER BY id LIMIT ? OFFSET ?";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setLong(1, pageSize);
+                stmt.setLong(2, offset);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        UserDTO user = new UserDTO();
+                        user.setId(rs.getLong("id"));
+                        user.setUsername(rs.getString("username"));
+                        user.setEmail(rs.getString("email"));
+                        user.setFullName(rs.getString("full_name"));
+                        user.setCreatedAt(rs.getString("created_at"));
+                        users.add(user);
+                    }
+                }
+            }
+
+            ResponsePayload response = ResponsePayload.success(null,
+                    "Page " + pageNum + " of " + totalPages + " (Total: " + totalCount + " users)");
+            response.setUsers(users);
+            response.setCurrentPage(pageNum);
+            response.setTotalPages(totalPages);
+            response.setPageSize(pageSize);
+            response.setTotalCount(totalCount);
+
             return response;
 
         } catch (SQLException e) {
@@ -319,14 +403,13 @@ public class ClientHandler implements Runnable {
         try (Connection conn = DatabaseConnection.getDataSource().getConnection()) {
             String query = "SELECT COUNT(*) as total FROM users";
             try (PreparedStatement stmt = conn.prepareStatement(query);
-                 ResultSet rs = stmt.executeQuery()) {
+                    ResultSet rs = stmt.executeQuery()) {
 
                 if (rs.next()) {
                     long totalUsers = rs.getLong("total");
                     String stats = String.format(
-                        "{\"workerId\":\"%s\",\"totalUsers\":%d,\"timestamp\":%d}",
-                        workerId, totalUsers, System.currentTimeMillis()
-                    );
+                            "{\"workerId\":\"%s\",\"totalUsers\":%d,\"timestamp\":%d}",
+                            workerId, totalUsers, System.currentTimeMillis());
                     return ResponsePayload.success(stats, "Stats retrieved");
                 }
             }

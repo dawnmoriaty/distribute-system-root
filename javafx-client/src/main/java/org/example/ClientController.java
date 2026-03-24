@@ -22,42 +22,90 @@ import java.util.List;
  */
 public class ClientController {
 
-    @FXML private TableView<UserDTO> userTable;
-    @FXML private TableColumn<UserDTO, Long> idColumn;
-    @FXML private TableColumn<UserDTO, String> usernameColumn;
-    @FXML private TableColumn<UserDTO, String> emailColumn;
-    @FXML private TableColumn<UserDTO, String> fullNameColumn;
+    @FXML
+    private TableView<UserDTO> userTable;
+    @FXML
+    private TableColumn<UserDTO, Long> idColumn;
+    @FXML
+    private TableColumn<UserDTO, String> usernameColumn;
+    @FXML
+    private TableColumn<UserDTO, String> emailColumn;
+    @FXML
+    private TableColumn<UserDTO, String> fullNameColumn;
 
-    @FXML private TextField searchField;
-    @FXML private TextField userIdField;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private TextField userIdField;
 
     // CRUD fields
-    @FXML private TextField crudIdField;
-    @FXML private TextField crudUsernameField;
-    @FXML private TextField crudEmailField;
-    @FXML private TextField crudFullNameField;
+    @FXML
+    private TextField crudIdField;
+    @FXML
+    private TextField crudUsernameField;
+    @FXML
+    private TextField crudEmailField;
+    @FXML
+    private TextField crudFullNameField;
 
-    @FXML private Button fetchAllButton;
-    @FXML private Button searchButton;
-    @FXML private Button getUserButton;
-    @FXML private Button pingButton;
-    @FXML private Button healthCheckButton;
+    @FXML
+    private Button fetchAllButton;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button getUserButton;
+    @FXML
+    private Button pingButton;
+    @FXML
+    private Button healthCheckButton;
 
     // CRUD buttons
-    @FXML private Button createUserButton;
-    @FXML private Button updateUserButton;
-    @FXML private Button deleteUserButton;
-    @FXML private Button clearFormButton;
-    @FXML private Button loadSelectedButton;
+    @FXML
+    private Button createUserButton;
+    @FXML
+    private Button updateUserButton;
+    @FXML
+    private Button deleteUserButton;
+    @FXML
+    private Button clearFormButton;
+    @FXML
+    private Button loadSelectedButton;
 
-    @FXML private Label statusLabel;
-    @FXML private Label workerLabel;
-    @FXML private Label responseTimeLabel;
-    @FXML private Label sslLabel;
-    @FXML private ProgressIndicator progressIndicator;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label workerLabel;
+    @FXML
+    private Label responseTimeLabel;
+    @FXML
+    private Label sslLabel;
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    // Pagination controls
+    @FXML
+    private Button prevPageButton;
+    @FXML
+    private Button nextPageButton;
+    @FXML
+    private Button loadPageButton;
+    @FXML
+    private TextField currentPageField;
+    @FXML
+    private Label totalPagesLabel;
+    @FXML
+    private Label totalCountLabel;
+    @FXML
+    private ComboBox<String> pageSizeCombo;
 
     private final ObservableList<UserDTO> userData = FXCollections.observableArrayList();
     private final SocketClient socketClient = SocketClient.getInstance();
+
+    // Pagination state
+    private long currentPage = 1;
+    private long totalPages = 0;
+    private long totalCount = 0;
+    private long pageSize = 20;
 
     @FXML
     public void initialize() {
@@ -95,14 +143,44 @@ public class ClientController {
             loadSelectedButton.setOnAction(e -> loadSelectedUser());
         }
 
+        // Pagination button handlers
+        if (prevPageButton != null) {
+            prevPageButton.setOnAction(e -> goToPreviousPage());
+        }
+        if (nextPageButton != null) {
+            nextPageButton.setOnAction(e -> goToNextPage());
+        }
+        if (loadPageButton != null) {
+            loadPageButton.setOnAction(e -> loadCurrentPage());
+        }
+
+        // Page size combo handler
+        if (pageSizeCombo != null) {
+            // Initialize with items
+            pageSizeCombo.setItems(FXCollections.observableArrayList("10", "20", "50", "100"));
+            pageSizeCombo.setValue("20");
+            pageSizeCombo.setOnAction(e -> {
+                String selected = pageSizeCombo.getValue();
+                if (selected != null) {
+                    try {
+                        pageSize = Long.parseLong(selected);
+                        currentPage = 1; // Reset to first page when size changes
+                        updatePageField();
+                        loadCurrentPage();
+                    } catch (NumberFormatException ex) {
+                        pageSize = 20;
+                    }
+                }
+            });
+        }
+
         // Table selection listener
         userTable.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    loadUserToForm(newSelection);
-                }
-            }
-        );
+                (obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        loadUserToForm(newSelection);
+                    }
+                });
 
         // Update SSL status
         if (sslLabel != null) {
@@ -139,6 +217,89 @@ public class ClientController {
             return;
         }
         executeAsync(Commands.SEARCH_USERS, keyword.trim(), "Searching...");
+    }
+
+    /**
+     * Loads paginated users.
+     */
+    private void loadCurrentPage() {
+        if (currentPage < 1)
+            currentPage = 1;
+        String paginationData = currentPage + ":" + pageSize;
+        executeAsync(Commands.GET_ALL_USERS_PAGINATED, paginationData, "Loading page " + currentPage + "...");
+    }
+
+    /**
+     * Navigate to previous page.
+     */
+    private void goToPreviousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePageField();
+            loadCurrentPage();
+        } else {
+            showAlert("Already on first page");
+        }
+    }
+
+    /**
+     * Navigate to next page.
+     */
+    private void goToNextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePageField();
+            loadCurrentPage();
+        } else {
+            showAlert("Already on last page");
+        }
+    }
+
+    /**
+     * Update the page number field UI.
+     */
+    private void updatePageField() {
+        Platform.runLater(() -> {
+            if (currentPageField != null) {
+                currentPageField.setText(String.valueOf(currentPage));
+            }
+        });
+    }
+
+    /**
+     * Updates pagination UI elements with server response data.
+     */
+    private void updatePaginationUI(ResponsePayload response) {
+        if (response.getTotalPages() > 0) {
+            Platform.runLater(() -> {
+                currentPage = response.getCurrentPage();
+                totalPages = response.getTotalPages();
+                totalCount = response.getTotalCount();
+                pageSize = response.getPageSize();
+
+                // Update UI elements
+                if (currentPageField != null) {
+                    currentPageField.setText(String.valueOf(currentPage));
+                }
+                if (totalPagesLabel != null) {
+                    totalPagesLabel.setText(String.valueOf(totalPages));
+                }
+                if (totalCountLabel != null) {
+                    totalCountLabel.setText("Total: " + totalCount + " users");
+                }
+                if (pageSizeCombo != null) {
+                    pageSizeCombo.setValue(String.valueOf(pageSize));
+                }
+
+                // Update button states
+                if (prevPageButton != null) {
+                    prevPageButton.setDisable(currentPage <= 1);
+                }
+                if (nextPageButton != null) {
+                    nextPageButton.setDisable(currentPage >= totalPages);
+                }
+            });
+        }
     }
 
     /**
@@ -232,10 +393,14 @@ public class ClientController {
      */
     private void clearForm() {
         Platform.runLater(() -> {
-            if (crudIdField != null) crudIdField.clear();
-            if (crudUsernameField != null) crudUsernameField.clear();
-            if (crudEmailField != null) crudEmailField.clear();
-            if (crudFullNameField != null) crudFullNameField.clear();
+            if (crudIdField != null)
+                crudIdField.clear();
+            if (crudUsernameField != null)
+                crudUsernameField.clear();
+            if (crudEmailField != null)
+                crudEmailField.clear();
+            if (crudFullNameField != null)
+                crudFullNameField.clear();
         });
     }
 
@@ -398,6 +563,11 @@ public class ClientController {
             responseTimeLabel.setText("Time: " + response.getProcessingTimeMs() + "ms");
         }
 
+        // Update pagination if available
+        if (response.getTotalPages() > 0) {
+            updatePaginationUI(response);
+        }
+
         if (response.isSuccess()) {
             // Update table with users if available
             List<UserDTO> users = response.getUsers();
@@ -414,12 +584,10 @@ public class ClientController {
                     userData.add(user);
                     updateStatus("User found");
                 } catch (Exception e) {
-                    updateStatus(response.getMessage() != null ?
-                            response.getMessage() : "Success");
+                    updateStatus(response.getMessage() != null ? response.getMessage() : "Success");
                 }
             } else {
-                updateStatus(response.getMessage() != null ?
-                        response.getMessage() : "Success");
+                updateStatus(response.getMessage() != null ? response.getMessage() : "Success");
             }
         } else {
             updateStatus("Error: " + response.getMessage());

@@ -31,6 +31,12 @@ public class ResponsePayload {
     private long processingTimeMs;
     private List<UserDTO> users;
 
+    // Pagination fields
+    private long currentPage;
+    private long totalPages;
+    private long pageSize;
+    private long totalCount;
+
     public ResponsePayload(String status, String data) {
         this.status = status;
         this.data = data;

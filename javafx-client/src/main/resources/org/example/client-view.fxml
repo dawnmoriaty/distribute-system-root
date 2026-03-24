@@ -82,9 +82,25 @@
                     <TableColumn fx:id="fullNameColumn" text="Full Name" prefWidth="200"/>
                 </columns>
                 <placeholder>
-                    <Label text="No data loaded. Click 'Fetch All Users' to start."/>
+                    <Label text="No data loaded. Click 'Fetch All Users' or 'Load Page' to start."/>
                 </placeholder>
             </TableView>
+
+            <!-- Pagination Controls -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-border-color: #cccccc; -fx-border-width: 1; -fx-padding: 8;">
+                <Button fx:id="prevPageButton" text="← Previous" prefWidth="100"/>
+                <Label text="Page:"/>
+                <TextField fx:id="currentPageField" text="1" prefWidth="50"/>
+                <Label text="of"/>
+                <Label fx:id="totalPagesLabel" text="0"/>
+                <Button fx:id="nextPageButton" text="Next →" prefWidth="100"/>
+                <Separator orientation="VERTICAL"/>
+                <Label text="Items per page:"/>
+                <ComboBox fx:id="pageSizeCombo" prefWidth="80"/>
+                <Button fx:id="loadPageButton" text="Load This Page" prefWidth="120"/>
+                <Separator orientation="VERTICAL"/>
+                <Label fx:id="totalCountLabel" text="Total: 0 users"/>
+            </HBox>
         </VBox>
     </center>
 
